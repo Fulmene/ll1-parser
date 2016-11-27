@@ -2,17 +2,20 @@ module CFG (
 emptySymbol, eofSymbol,
 fromString, nonterminal, terminal,
 source, result,
-variables, terminals, rules, starter
+nonterminals, terminals, rules, starter,
+rulesFrom, rulesTo
 ) where
 
 import Data.List
+import qualified Data.Set as Set
+import Data.Char
 
-data Symbol = Nonterminal String | Terminal String deriving Show
+data Symbol = Nonterminal String | Terminal String deriving (Show, Eq, Ord)
 emptySymbol = Terminal "empty"
 eofSymbol = Terminal "eof"
 
 fromString :: String -> Symbol
-fromString s@(x:xs) = if x == '<' then Nonterminal s else Terminal s
+fromString s = if isUpper (head (dropWhile (not.isLetter) s)) then Nonterminal s else Terminal s
 
 nonterminal :: Symbol -> Bool
 nonterminal (Nonterminal _) = True
@@ -56,6 +59,12 @@ readRule r = readRule' (words r) where
     | terminal (fromString $ head rs) = error "Terminal appears on the left hand side."
     | ruleValid rs = map (\x -> (fromString (head rs), map fromString x)) (splitOn (=="|") (tail $ tail rs))
     | otherwise = []
+
+rulesFrom :: CFG -> Symbol -> [Rule]
+rulesFrom cfg s = filter (\r -> source r == s) (rules cfg)
+
+rulesTo :: CFG -> Symbol -> [Rule]
+rulesTo cfg s = filter (\r -> s `elem` (result r)) (rules cfg)
 
 ------------ Utility functions ------------
 
