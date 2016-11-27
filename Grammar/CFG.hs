@@ -1,4 +1,4 @@
-module CFG (
+module CFG (CFG, Symbol, Rule,
 emptySymbol, eofSymbol,
 fromString, nonterminal, terminal,
 source, result,
@@ -51,7 +51,7 @@ readCFG rules = CFG (filter nonterminal symbols)
     symbols = map fromString (
       (nubOrd $
       filter (\x -> x /= "::=" && x /= "|")
-      (concat $ filter ruleValid (map words (lines rules))))) ++ [eofSymbol]
+      (concat $ filter ruleValid (map words (lines rules)))))
 
 readRule :: String -> [Rule]
 readRule r = readRule' (words r) where
