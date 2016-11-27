@@ -1,8 +1,9 @@
 module CFG (CFG, Symbol, Rule,
 emptySymbol, eofSymbol,
-fromString, nonterminal, terminal,
+fromString, toString, nonterminal, terminal,
 source, result,
 nonterminals, terminals, rules, starter,
+readCFG,
 rulesFrom, rulesTo
 ) where
 
@@ -16,11 +17,13 @@ eofSymbol = Terminal "eof"
 
 fromString :: String -> Symbol
 fromString s = if isUpper (head (dropWhile (not.isLetter) s)) then Nonterminal s else Terminal s
+toString :: Symbol -> String
+toString (Nonterminal s) = s
+toString (Terminal s) = s
 
 nonterminal :: Symbol -> Bool
 nonterminal (Nonterminal _) = True
 nonterminal _ = False
-
 terminal :: Symbol -> Bool
 terminal (Terminal _) = True
 terminal _ = False
