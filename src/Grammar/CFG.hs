@@ -47,14 +47,14 @@ rules (CFG _ _ rs _) = rs
 starter (CFG _ _ _ st) = st
 
 readCFG :: String -> CFG
-readCFG rules = CFG (filter nonterminal symbols)
-  (filter terminal symbols)
+readCFG rules = CFG (filter nonterminal symbolsUnique)
+  (filter terminal symbolsUnique)
   (concat $ map readRule $ lines rules)
   (head symbols) where
     symbols = map fromString (
-      (nubOrd $
       filter (\x -> x /= "::=" && x /= "|")
-      (concat $ filter ruleValid (map words (lines rules)))))
+      (concat $ filter ruleValid (map words (lines rules))))
+    symbolsUnique = nubOrd symbols
 
 readRule :: String -> [Rule]
 readRule r = readRule' (takeWhile (/="--") $ words r) where
