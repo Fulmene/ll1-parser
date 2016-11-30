@@ -1,8 +1,8 @@
-module LL1Parser (parseProperly) where
+module Grammar.LL1Parser (parseProperly) where
 
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import CFG
+import Grammar.CFG
 
 firstSetOf :: CFG -> Map.Map Symbol (Set.Set Symbol)
 firstSetOf cfg = Map.fromList fs where
@@ -73,9 +73,13 @@ match cfg s@(x:xs) t@(y:ys) =
 
 matchTerm :: String -> String -> Bool
 matchTerm s t = case s of
+  "filename" -> matchFileName t
   "id" -> matchId t
   "num" -> matchNum t
   _ -> s == t
+
+matchFileName :: String -> Bool
+matchFileName s = s == "filename" -- stub
 
 matchId :: String -> Bool
 matchId s = s == "id" --stub

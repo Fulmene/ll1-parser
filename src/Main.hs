@@ -1,11 +1,14 @@
+module Main where
+
 import System.IO
+import System.Environment
 
 import Grammar.CFG
 import Grammar.LL1Parser
 
 main = do
   args <- getArgs
-  if length args == 2 then
+  if length args == 2 then do
     hGrammar <- openFile (args !! 0) ReadMode
     hText <- openFile (args !! 1) ReadMode
     grammar <- hGetContents hGrammar

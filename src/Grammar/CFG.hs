@@ -1,4 +1,4 @@
-module CFG (CFG, Symbol, Rule,
+module Grammar.CFG (CFG, Symbol, Rule,
 emptySymbol, eofSymbol,
 fromString, toString, nonterminal, terminal,
 source, result,
@@ -57,7 +57,7 @@ readCFG rules = CFG (filter nonterminal symbols)
       (concat $ filter ruleValid (map words (lines rules)))))
 
 readRule :: String -> [Rule]
-readRule r = readRule' (words r) where
+readRule r = readRule' (takeWhile (/="--") $ words r) where
   readRule' rs
     | terminal (fromString $ head rs) = error "Terminal appears on the left hand side."
     | ruleValid rs = map (\x -> (fromString (head rs), map fromString x)) (splitOn (=="|") (tail $ tail rs))
