@@ -59,6 +59,7 @@ readCFG rules = CFG (filter nonterminal symbols)
 readRule :: String -> [Rule]
 readRule r = readRule' (takeWhile (/="--") $ words r) where
   readRule' rs
+    | null rs = []
     | terminal (fromString $ head rs) = error "Terminal appears on the left hand side."
     | ruleValid rs = map (\x -> (fromString (head rs), map fromString x)) (splitOn (=="|") (tail $ tail rs))
     | otherwise = []

@@ -20,5 +20,5 @@ main = do
     hClose hGrammar
     hClose hText
   else
-    putStrLn "Usage: parser [grammar-file] [text-file]"
+    putStrLn "Usage: ll1parser [grammar-file] [text-file]"
 

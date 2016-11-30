@@ -3,44 +3,11 @@ module Grammar.LL1Parser (parseProperly) where
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 import Grammar.CFG
-
-firstSetOf :: CFG -> Map.Map Symbol (Set.Set Symbol)
-firstSetOf cfg = Map.fromList fs where
-  fs = map (\x -> (x, computeFirstSet cfg x)) symbol where
-    symbol = (nonterminals cfg) ++ (terminals cfg)
-
-computeFirstSet :: CFG -> Symbol -> Set.Set Symbol
-computeFirstSet cfg s
-  | terminal s = Set.singleton s
-  | otherwise = Set.unions (map ((firstSetSeq cfg).result) (rulesFrom cfg s))
-
-firstSet :: CFG -> Symbol -> Set.Set Symbol
-firstSet cfg s = Map.findWithDefault Set.empty s (firstSetOf cfg)
-
-firstSetSeq :: CFG -> [Symbol] -> Set.Set Symbol
-firstSetSeq _ [] = Set.singleton emptySymbol
-firstSetSeq cfg (x:xs) = (Set.delete emptySymbol fx) `Set.union`
-  if emptySymbol `Set.member` fx then firstSetSeq cfg xs
-  else Set.empty where fx = firstSet cfg x
-
-followSetOf :: CFG -> Map.Map Symbol (Set.Set Symbol)
-followSetOf cfg = Map.fromList fs where
-  fs = symbol >>= (\x -> return (x, computeFollowSet cfg x)) where
-    symbol = (nonterminals cfg) ++ (terminals cfg)
-
-computeFollowSet :: CFG -> Symbol -> Set.Set Symbol
-computeFollowSet cfg s = if s == starter cfg then Set.singleton eofSymbol else Set.unions (map followRule rs) where
-  rs = rulesTo cfg s
-  followRule :: Rule -> Set.Set Symbol
-  followRule (from, (x:xs))
-    | x == s = (Set.delete emptySymbol fxs) `Set.union` (if (null xs) || (emptySymbol `Set.member` fxs) then followSet cfg from else Set.empty)
-    | otherwise = followRule(from, xs) where fxs = firstSetSeq cfg xs
-
-followSet :: CFG -> Symbol -> Set.Set Symbol
-followSet cfg s = Map.findWithDefault Set.empty s (followSetOf cfg)
+import Grammar.LL1Parser.FirstSet
+import Grammar.LL1Parser.FollowSet
 
 parsingTable :: CFG -> Map.Map (Symbol, Symbol) Rule
-parsingTable cfg = Map.fromListWith (\_ -> error "Not an LL1 grammar.") (
+parsingTable cfg = Map.fromListWith (\_ -> error "Not an LL1 grammar: More than one usable rule for a nonterminal-terminal pair.") (
   do nt <- nonterminals cfg
      t <- terminals cfg
      r <- matchRules cfg nt t
