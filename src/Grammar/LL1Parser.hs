@@ -32,25 +32,15 @@ match cfg s [] = emptySymbol `Set.member` (firstSetSeq cfg s)
 match cfg s@(x:xs) t@(y:ys) =
    if terminal x then
      if x == emptySymbol then match cfg xs t
-     else matchTerm (toString x) y && match cfg xs ys
+     else ((toString x) == y) && match cfg xs ys
    else
      case parsingRule cfg x (fromString y) of
-       Nothing -> False
+       Nothing -> if wildcardSymbol `Set.member` (firstSet cfg x) then
+                    match cfg s ("wildcard":ys)
+                  else
+                    if emptySymbol `Set.member` (firstSet cfg x) then
+                      match cfg xs t
+                    else
+                      False
        Just r -> match cfg (result r ++ xs) t
-
-matchTerm :: String -> String -> Bool
-matchTerm s t = case s of
-  "filename" -> matchFileName t
-  "id" -> matchId t
-  "num" -> matchNum t
-  _ -> s == t
-
-matchFileName :: String -> Bool
-matchFileName s = s == "filename" -- stub
-
-matchId :: String -> Bool
-matchId s = s == "id" --stub
-
-matchNum :: String -> Bool
-matchNum s = s == "num" --stub
 

@@ -1,5 +1,5 @@
 module Grammar.CFG (CFG, Symbol, Rule,
-emptySymbol, eofSymbol,
+emptySymbol, wildcardSymbol, eofSymbol,
 fromString, toString, nonterminal, terminal,
 source, result,
 nonterminals, terminals, rules, starter,
@@ -13,6 +13,7 @@ import Data.Char
 
 data Symbol = Nonterminal String | Terminal String deriving (Show, Eq, Ord)
 emptySymbol = Terminal "empty"
+wildcardSymbol = Terminal "wildcard"
 eofSymbol = Terminal "eof"
 
 fromString :: String -> Symbol
