@@ -7,8 +7,8 @@ import qualified Data.Map as Map
 import Grammar.CFG
 import Grammar.LL1Parser.FirstSet
 
-followSetOf :: CFG -> Map.Map Symbol (Set.Set Symbol)
-followSetOf cfg = Map.fromList fs where
+followSetMap :: CFG -> Map.Map Symbol (Set.Set Symbol)
+followSetMap cfg = Map.fromList fs where
   fs = (nonterminals cfg) >>= (\x -> return (x, computeFollowSet cfg x))
 
 computeFollowSet :: CFG -> Symbol -> Set.Set Symbol
@@ -24,5 +24,5 @@ computeFollowSet cfg s = (if s == starter cfg then Set.singleton eofSymbol else 
     fxs = firstSetSeq cfg xs
 
 followSet :: CFG -> Symbol -> Set.Set Symbol
-followSet cfg s = Map.findWithDefault Set.empty s (followSetOf cfg)
+followSet cfg s = Map.findWithDefault Set.empty s (followSetMap cfg)
 
