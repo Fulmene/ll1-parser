@@ -8,14 +8,16 @@ import Grammar.CFG
 
 newtype FirstSetSeq = FirstSet { getSet :: Set.Set Symbol }
 
+-- Monoid for combining first sets of a sequence
+-- If the left set contains empty symbol, the next set also get included
+-- If it doesn't, stop
 instance Monoid (FirstSetSeq) where
   mempty = FirstSet (Set.singleton emptySymbol)
   mappend x@(FirstSet xs) y@(FirstSet ys) = if emptySymbol `Set.member` xs then FirstSet ((Set.delete emptySymbol xs) `Set.union` ys) else x
 
 firstSetOf :: CFG -> Map.Map Symbol (Set.Set Symbol)
 firstSetOf cfg = Map.fromList fs where
-  fs = map (\x -> (x, computeFirstSet cfg x)) symbol where
-    symbol = (nonterminals cfg) ++ (terminals cfg)
+  fs = map (\x -> (x, computeFirstSet cfg x)) (nonterminals cfg) where
 
 computeFirstSet :: CFG -> Symbol -> Set.Set Symbol
 computeFirstSet cfg s
@@ -23,7 +25,9 @@ computeFirstSet cfg s
   | otherwise = Set.unions (map ((firstSetSeq cfg).result) (rulesFrom cfg s))
 
 firstSet :: CFG -> Symbol -> Set.Set Symbol
-firstSet cfg s = Map.findWithDefault Set.empty s (firstSetOf cfg)
+firstSet cfg s
+  | terminal s = Set.singleton s
+  | otherwise = Map.findWithDefault Set.empty s (firstSetOf cfg)
 
 firstSetSeq :: CFG -> [Symbol] -> Set.Set Symbol
 firstSetSeq _ [] = Set.singleton emptySymbol
