@@ -1,0 +1,64 @@
+<Prog> ::= <Inc> <Prog> | <Func> <Prog> | empty
+
+<Inc> ::= include <File> stop
+<File> ::= <Filename> <Files>
+<Files> ::= <Filename> <Files> | empty
+<Filename> ::= wildcard
+
+<Func> ::= function <Id> <Param> <Block>
+<Param> ::= parameter <Id> <Params> stop | empty
+<Params> ::= <Id> <Params> | empty
+
+<Block> ::= block <Stmts> stop
+<Stmts> ::= <Stmt> <Stmts> | empty
+<Stmt> ::= <Expr> | <Asgn> | <Ret> | <Ctrl>
+
+<Expr> ::= boolean <Bool> | arithmetic <Artm> | <Id> | <Call>
+
+<Bool> ::= <BoolExpr> <Bools>
+<Bools> ::= <BoolOp> <BoolExpr> <Bools> | empty
+<BoolExpr> ::= <BoolTerm> | <BoolBracket> | <BoolNot>
+<BoolBracket> ::= bracket <Bool> stop
+<BoolNot> ::= not <Bool> stop
+<BoolTerm> ::= true | false | <Comp> | <Id> | <Call>
+<BoolOp> ::= and | or
+
+<Comp> ::= compare <Artm> <CompOp> <Artm>
+<CompOp> ::= equal | inequal | less | lequal | more | mequal
+
+<Artm> ::= <ArtmExpr> <Artms>
+<Artms> ::= <ArtmOp> <ArtmExpr> <Artms> | empty
+<ArtmExpr> ::= <ArtmTerm> | <ArtmBracket> | <ArtmNegate>
+<ArtmBracket> ::= bracket <Artm> stop
+<ArtmNegate> ::= negate <Artm> stop
+<ArtmTerm> ::= <Number> | <Id> | <Call>
+<ArtmOp> ::= plus | minus | mul | div | mod
+
+<Number> ::= <Integer> <Fraction> <Exponent>
+<Integer> ::= <Sign> <NumInit> <Digits> | zero
+<Sign> ::= positive | negative | empty
+<Fraction> ::= point <Digits> | empty
+<Exponent> ::= expo <Integer> | empty
+<Digits> ::= <Digit> <Digits> | empty
+<NumInit> ::= one | two | three | four | five | six | seven | eight | nine
+<Digit> ::= zero | <NumInit>
+
+<Asgn> ::= assign <Id> to <Expr>
+
+<Call> ::= call <Id> <CallParam>
+<CallParam> ::= parameter <CallParam1> stop
+<CallParam1> ::= <Expr> <CallParams>
+<CallParams> ::= <Expr> <CallParams> | empty
+
+<Ret> ::= return <Expr>
+
+<Ctrl> ::= <If> | <Loop>
+<If> ::= if <Bool> then <Block> <Elsif> <Else>
+<Elsif> ::= elsif <Bool> then <Block> <Elsif> | empty
+<Else> ::= else <Block> | empty
+<Loop> ::= <While> | <For>
+<While> ::= while <Bool> do <Block>
+<For> ::= for <Id> from <Artm> to <Artm> do <Block>
+
+<Id> ::= wildcard
+

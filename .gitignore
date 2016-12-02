@@ -68,8 +68,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Grammar files for the project
-grammar
-
 # Vim swap files
 *.swp

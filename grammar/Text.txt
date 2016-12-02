@@ -1,0 +1,19 @@
+include stdio.h stop
+
+function main block
+  for i from one to one zero do block
+    call print parameter i stop
+  stop
+stop
+
+function fibonacci parameter n stop block
+  assign a to arithmetic zero
+  assign b to arithmetic one
+  for i from two to n do block
+    if compare i mod two equal zero then block assign a to arithmatic a plus b stop
+    else block assign b to arithmetic a plus b stop
+  stop
+  if compare n mod two equal zero then block return a stop
+  else block return b stop
+stop
+
